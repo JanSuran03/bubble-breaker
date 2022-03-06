@@ -1,4 +1,3 @@
-import javax.swing.text.Style;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -7,9 +6,28 @@ public class GameField extends Canvas {
 
     public Game game;
 
+    static public int restart_button_x = 300,
+            restart_button_y = 20,
+            restart_button_width = 170,
+            restart_button_height = 44;
+
+    static public boolean onRestartButton(int mouse_x, int mouse_y) {
+        return mouse_x >= restart_button_x
+                && mouse_x <= restart_button_x + restart_button_width
+                && mouse_y >= restart_button_y
+                && mouse_y <= restart_button_y + restart_button_height;
+    }
+
+    static public void paintRestartButton(Graphics g) {
+        g.setColor(Color.BLACK);
+        g.drawRect(restart_button_x, restart_button_y,
+                restart_button_width, restart_button_height);
+        g.setFont(new Font("Calibri", Font.PLAIN, 30));
+        g.drawString("RESTART", restart_button_x + 15, restart_button_y + 35);
+    }
+
     public GameField() {
         game = new Game();
-        game.init();
         this.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent me) {
@@ -35,9 +53,13 @@ public class GameField extends Canvas {
     }
 
     public void dispatchMouseReleased(MouseEvent me) {
-        int x = me.getX() - offset_x;
-        int y = me.getY() - offset_y;
-        if (x >= 0 && y >= 0) {
+        int raw_x = me.getX(), raw_y = me.getY();
+        int x = raw_x - offset_x;
+        int y = raw_y - offset_y;
+        if (onRestartButton(raw_x, raw_y)) {
+            game = new Game();
+            repaint();
+        } else if (x >= 0 && y >= 0) {
             int col = x / cell_size;
             int row = y / cell_size;
             if (row < Game.height && col < Game.width) {
@@ -66,11 +88,21 @@ public class GameField extends Canvas {
             }
     }
 
-    @Override
-    public void paint(Graphics g) {
+    public void restartGame() {
+        game = new Game();
+        repaint();
+    }
+
+    public void drawScore(Graphics g) {
         g.setFont(new Font("Calibri", Font.PLAIN, 40));
         g.drawString("SCORE: " + game.score, 20, 60);
+    }
+
+    @Override
+    public void paint(Graphics g) {
+        drawScore(g);
         this.setBackground(new Color(188, 188, 188));
         paintCells(g);
+        paintRestartButton(g);
     }
 }

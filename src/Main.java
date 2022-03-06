@@ -1,5 +1,4 @@
 import javax.swing.*;
-import java.awt.*;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -21,11 +20,11 @@ public class Main {
         }
     }
 
-    static public void clear(){
+    static public void clear() {
         System.out.println('\n');
     }
 
-    public static void main(String[] args) {
+    static public void main(String[] args) {
         /*Game game = new Game();
         game.init();
         //testCluster(game);

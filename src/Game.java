@@ -7,9 +7,6 @@ public class Game {
     public int remaining_cells = width * height;
 
     public Game() {
-    }
-
-    public void init() {
         for (int i = 0; i < height; i++)
             for (int j = 0; j < width; j++)
                 field[i][j] = new Cell();
