@@ -42,9 +42,9 @@ public class GameField extends Canvas {
             int row = y / cell_size;
             if (row < Game.height && col < Game.width) {
                 game.gameMove(row, col);
+                repaint();
             }
         }
-        repaint();
     }
 
     static public int cell_size = 50, r = 10,

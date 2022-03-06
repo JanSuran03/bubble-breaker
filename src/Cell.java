@@ -81,7 +81,8 @@ public class Cell {
             Vector<Integer> neighbors = cellNeighbors(toCoords(current));
             for (Integer neighbor : neighbors) {
                 int[] coords = toCoords(neighbor);
-                if (!gone.contains(neighbor) && field[coords[0]][coords[1]].cell_color == color) {
+                Cell cell = field[coords[0]][coords[1]];
+                if (!gone.contains(neighbor) && cell != null && cell.cell_color == color) {
                     pending.add(neighbor);
                     color_cluster.add(neighbor);
                 }
