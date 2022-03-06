@@ -29,10 +29,10 @@ public class Cell {
     }
 
     static public int toIndex(int row, int col) {
-        return row * Field.width + col;
+        return row * Game.width + col;
     }
 
-    static public final int h = Field.height, w = Field.width;
+    static public final int h = Game.height, w = Game.width;
 
     static public int[] toCoords(int as_index) {
         return new int[]{as_index / w, as_index % w};
@@ -58,8 +58,8 @@ public class Cell {
         return neighbors;
     }
 
-    static public Vector<Integer> colorCluster(Field field_, int row, int col) {
-        Cell[][] field = field_.field;
+    static public Vector<Integer> colorCluster(Game game, int row, int col) {
+        Cell[][] field = game.field;
         CellColor color = field[row][col].cell_color;
         int idx = toIndex(row, col);
         Stack<Integer> color_cluster = new Stack<>();
@@ -81,13 +81,5 @@ public class Cell {
         if (!gone.contains(idx))
             color_cluster.add(idx);
         return color_cluster;
-    }
-
-    public void dispatch(int row, int col) {
-
-    }
-
-    public Cell(CellColor cell_color) {
-        this.cell_color = cell_color;
     }
 }

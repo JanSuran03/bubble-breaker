@@ -1,9 +1,12 @@
-public class Field {
-    static public final int height = 10, width = 20;
-    public Cell[][] field;
+import java.util.Vector;
 
-    public Field() {
-        field = new Cell[height][width];
+public class Game {
+    static public final int height = 10, width = 20;
+    public Cell[][] field = new Cell[height][width];
+    public int score = 0;
+    public int remaining_cells = width * height;
+
+    public Game() {
     }
 
     public void init() {
@@ -14,7 +17,7 @@ public class Field {
 
     public void print() {
         System.out.print("   ");
-        for (int i = 0; i < Field.width; i++)
+        for (int i = 0; i < Game.width; i++)
             System.out.printf("%3d", i);
         System.out.print('\n');
         int r = 0;
@@ -83,6 +86,23 @@ public class Field {
                     }
                 }
             }
+        }
+    }
+
+    public void gameMove(int row, int col){
+        Vector<Integer> selected_color_cluster = Cell.colorCluster(this, row, col);
+        int cnt = selected_color_cluster.size();
+        if (cnt > 1){
+            int score_increment = cnt * (cnt + 1);
+            //delete cells
+            for(int color_idx : selected_color_cluster){
+                int[] coords = Cell.toCoords(color_idx);
+                field[coords[0]][coords[1]] = null;
+            }
+            remaining_cells -= cnt;
+            score += score_increment;
+            moveDown();
+            moveLeft();
         }
     }
 
