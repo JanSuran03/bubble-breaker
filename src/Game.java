@@ -89,20 +89,22 @@ public class Game {
         }
     }
 
-    public void gameMove(int row, int col){
-        Vector<Integer> selected_color_cluster = Cell.colorCluster(this, row, col);
-        int cnt = selected_color_cluster.size();
-        if (cnt > 1){
-            int score_increment = cnt * (cnt + 1);
-            //delete cells
-            for(int color_idx : selected_color_cluster){
-                int[] coords = Cell.toCoords(color_idx);
-                field[coords[0]][coords[1]] = null;
+    public void gameMove(int row, int col) {
+        if (field[row][col] != null) {
+            Vector<Integer> selected_color_cluster = Cell.colorCluster(this, row, col);
+            int cnt = selected_color_cluster.size();
+            if (cnt > 1) {
+                int score_increment = cnt * (cnt + 1);
+                //delete cells
+                for (int color_idx : selected_color_cluster) {
+                    int[] coords = Cell.toCoords(color_idx);
+                    field[coords[0]][coords[1]] = null;
+                }
+                remaining_cells -= cnt;
+                score += score_increment;
+                moveDown();
+                moveLeft();
             }
-            remaining_cells -= cnt;
-            score += score_increment;
-            moveDown();
-            moveLeft();
         }
     }
 
