@@ -1,3 +1,5 @@
+import javax.swing.*;
+import java.awt.*;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -24,7 +26,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        Game game = new Game();
+        /*Game game = new Game();
         game.init();
         //testCluster(game);
         game.print();
@@ -33,6 +35,11 @@ public class Main {
         game.print();
         game.moveLeft();
         clear();
-        game.print();
+        game.print();*/
+        JFrame jf = new JFrame("pepega");
+        GameField game_field = new GameField();
+        jf.add(game_field);
+        jf.setBounds(100, 100, 1200, 800);
+        jf.setVisible(true);
     }
 }

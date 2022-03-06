@@ -1,4 +1,6 @@
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.function.Predicate;
 
 public class Cell {
@@ -8,6 +10,14 @@ public class Cell {
         Red,
         Yellow,
     }
+
+    static public Map<CellColor, Color> color_to_awt
+            = Map.of(
+            CellColor.Blue, Color.BLUE,
+            CellColor.Green, Color.GREEN,
+            CellColor.Red, Color.RED,
+            CellColor.Yellow, Color.YELLOW
+    );
 
     public CellColor cell_color;
 
