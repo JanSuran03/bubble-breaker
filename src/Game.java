@@ -1,3 +1,5 @@
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Vector;
 
 public class Game {
@@ -5,6 +7,12 @@ public class Game {
     public Cell[][] field = new Cell[height][width];
     public int score = 0;
     public int remaining_cells = width * height;
+    public HashSet<Integer> selected = new HashSet<>();
+
+    public Cell getByIndex(Integer index) {
+        int[] coords = Cell.toCoords(index);
+        return field[coords[0]][coords[1]];
+    }
 
     public Game() {
         for (int i = 0; i < height; i++)
@@ -20,10 +28,9 @@ public class Game {
         int r = 0;
         for (Cell[] row : field) {
             System.out.printf("%3d", r++);
-            for (Cell cell : row) {
+            for (Cell cell : row)
                 System.out.printf("%3s",
                         cell == null ? " " : Cell.first_letter(cell.cell_color));
-            }
             System.out.print('\n');
         }
     }
@@ -33,9 +40,9 @@ public class Game {
             int bottom_row = height - 1;
             boolean behind = false;
             for (int row = bottom_row; row >= 0; row--) {
-                if (field[row][col] == null) {
+                if (field[row][col] == null)
                     behind = true;
-                } else {
+                else {
                     if (behind) {
                         field[bottom_row][col] = field[row][col];
                         field[row][col] = null;
@@ -86,14 +93,30 @@ public class Game {
         }
     }
 
-    public void gameMove(int row, int col) {
-        if (field[row][col] != null) {
-            Vector<Integer> selected_color_cluster = Cell.colorCluster(this, row, col);
-            int cnt = selected_color_cluster.size();
-            if (cnt > 1) {
+    public void selectAll(Collection<Integer> indices, boolean select_or_deselect) {
+        for (int i : indices)
+            getByIndex(i).is_selected = select_or_deselect;
+    }
+
+    public boolean gameMove(int row, int col) {
+        Cell selected_cell = field[row][col];
+        if (selected_cell != null) {
+            // ->> nothing is selected, selects color cluster
+            if (selected.isEmpty()) {
+                Vector<Integer> selected_color_cluster = Cell.colorCluster(this, row, col);
+                if (selected_color_cluster.size() > 1) {
+                    selected.addAll(selected_color_cluster);
+                    selectAll(selected_color_cluster, true);
+                    return true;
+                }
+                return false;
+            }
+            // ->> selection confirmed
+            else if (selected.contains(Cell.toIndex(row, col))) {
+                int cnt = selected.size();
                 int score_increment = cnt * (cnt + 1);
                 //delete cells
-                for (int color_idx : selected_color_cluster) {
+                for (int color_idx : selected) {
                     int[] coords = Cell.toCoords(color_idx);
                     field[coords[0]][coords[1]] = null;
                 }
@@ -101,8 +124,17 @@ public class Game {
                 score += score_increment;
                 moveDown();
                 moveLeft();
+                selected = new HashSet<>();
+                return true;
+            }
+            // ->> selection cancelled
+            else {
+                selectAll(selected, false);
+                selected = new HashSet<>();
+                return true;
             }
         }
+        return false;
     }
 
 

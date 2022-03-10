@@ -25,17 +25,7 @@ public class Main {
     }
 
     static public void main(String[] args) {
-        /*Game game = new Game();
-        game.init();
-        //testCluster(game);
-        game.print();
-        removeRandom(game, 350);
-        clear();
-        game.print();
-        game.moveLeft();
-        clear();
-        game.print();*/
-        JFrame jf = new JFrame("pepega");
+        JFrame jf = new JFrame("Bubble breaker");
         GameField game_field = new GameField();
         jf.add(game_field);
         jf.setBounds(100, 100, 1200, 800);

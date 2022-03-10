@@ -20,6 +20,7 @@ public class Cell {
     );
 
     public CellColor cell_color;
+    public boolean is_selected = false;
 
     public Cell() {
         this.cell_color = random_color();
@@ -68,9 +69,9 @@ public class Cell {
         return neighbors;
     }
 
+    // basically BFS
     static public Vector<Integer> colorCluster(Game game, int row, int col) {
-        Cell[][] field = game.field;
-        CellColor color = field[row][col].cell_color;
+        CellColor color = game.field[row][col].cell_color;
         int idx = toIndex(row, col);
         Stack<Integer> color_cluster = new Stack<>();
         Stack<Integer> pending = new Stack<>();
@@ -80,8 +81,7 @@ public class Cell {
             int current = pending.pop();
             Vector<Integer> neighbors = cellNeighbors(toCoords(current));
             for (Integer neighbor : neighbors) {
-                int[] coords = toCoords(neighbor);
-                Cell cell = field[coords[0]][coords[1]];
+                Cell cell = game.getByIndex(neighbor);
                 if (!gone.contains(neighbor) && cell != null && cell.cell_color == color) {
                     pending.add(neighbor);
                     color_cluster.add(neighbor);

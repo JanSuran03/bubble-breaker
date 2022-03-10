@@ -6,10 +6,11 @@ public class GameField extends Canvas {
 
     public Game game;
 
-    static public int restart_button_x = 300,
+    static public final int restart_button_x = 300,
             restart_button_y = 20,
             restart_button_width = 170,
-            restart_button_height = 44;
+            restart_button_height = 44,
+            restart_button_radius = 16;
 
     static public boolean onRestartButton(int mouse_x, int mouse_y) {
         return mouse_x >= restart_button_x
@@ -19,9 +20,17 @@ public class GameField extends Canvas {
     }
 
     static public void paintRestartButton(Graphics g) {
+        // inner
+        g.setColor(Color.WHITE);
+        g.fillRoundRect(restart_button_x, restart_button_y,
+                restart_button_width, restart_button_height,
+                restart_button_radius, restart_button_radius);
+        // border
         g.setColor(Color.BLACK);
-        g.drawRect(restart_button_x, restart_button_y,
-                restart_button_width, restart_button_height);
+        g.drawRoundRect(restart_button_x, restart_button_y,
+                restart_button_width, restart_button_height,
+                restart_button_radius, restart_button_radius);
+        // text
         g.setFont(new Font("Calibri", Font.PLAIN, 30));
         g.drawString("RESTART", restart_button_x + 15, restart_button_y + 35);
     }
@@ -57,28 +66,33 @@ public class GameField extends Canvas {
         int x = raw_x - offset_x;
         int y = raw_y - offset_y;
         if (onRestartButton(raw_x, raw_y)) {
-            game = new Game();
-            repaint();
+            restartGame();
         } else if (x >= 0 && y >= 0) {
             int col = x / cell_size;
             int row = y / cell_size;
-            if (row < Game.height && col < Game.width) {
-                game.gameMove(row, col);
+            if (row < Game.height && col < Game.width
+                    && game.gameMove(row, col))
                 repaint();
-            }
         }
     }
 
-    static public int cell_size = 50, r = 10,
+    static public int cell_size = 50, r = cell_size,
             offset_x = cell_size, offset_y = cell_size * 2;
 
     public void paintCells(Graphics g) {
         for (int row = 0; row < Game.height; row++)
             for (int col = 0; col < Game.width; col++) {
-                if (game.field[row][col] != null) {
-                    Color color = Cell.color_to_awt.get(
+                Cell cell = game.field[row][col];
+                if (cell != null) {
+                    Color c = Cell.color_to_awt.get(
                             game.field[row][col].cell_color);
-                    g.setColor(color);
+                    boolean nothing_selected = game.selected.isEmpty();
+                    if (nothing_selected || cell.is_selected) {
+                        g.setColor(c);
+                    } else {
+                        g.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(),
+                                /* color alpha in percent */ 255 * 90 / 100));
+                    }
                     g.fillRoundRect(
                             (col + 1) * cell_size + 1,
                             (row + 2) * cell_size + 1,
